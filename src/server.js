@@ -25,7 +25,7 @@ app.post('/signup',middleSignUp ,(req, res, next) => {
 
 app.post('/signin', basicAuth, (req, res, next)=> {
 
- res.status(200).json({username: req.username ,id :req.user.id})
+    res.status(200).json({username: req.username ,id :req.user.id})
     
 });
 

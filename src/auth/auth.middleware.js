@@ -7,28 +7,21 @@ const base64 = require('base-64');
 
 
 const middleSignUp =async (req,res,next)=>{
-    
-
-        console.log('its work ')
-        // try{
-        const valid = await Users.findOne({ where: { username: req.body.username } });
-        if(!valid) {
-            //  req.body.password = await bcrypt.hash(req.body.password, 10);
-          const record = await Users.create({
+    console.log('its work ')
+    try {
+        req.body.password = await bcrypt.hash(req.body.password, 10);
+        req.record = await Users.create({
             username : req.body.username,
-            password : req.body.password,
-          });
-          res.status(200).json(record);
-          next();
-        } else {
-          next('already exist');
-        }
-    //   } catch (e) {
-    //     console.log(e);
-    //     next('invalid')
+            password: req.body.password
+        });
+        console.log("record >>>>> ", req.record)
+        next();
+       
+    } catch (e) {
+        console.log(e);
+        next('invalid')
     
-    // }
-   
+    }
 }
 
 
@@ -41,25 +34,24 @@ const basicAuth =async (req,res,next)=>{
         let [username, password] = decoded.split(":"); 
         req.username=username
        
-    //    try {
+       try {
       
            const user = await Users.findOne({ where: {username: req.username} });
            const valid = await bcrypt.compare(password, user.password);
            req.user=user
             if (valid) {
-         
+              res.status(200).json(user);
                 next();
                 
-            } 
-            else {
+            } else {
               
                 next('Invalid UserName and Password')
             }
-    //    } catch(e) {
-    //        console.log(e)
-    //     next('error in signin')
+       } catch(e) {
+           console.log(e)
+        next('error in signin')
       
-    //    }
+       }
     }
 }
 
